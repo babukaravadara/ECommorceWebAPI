@@ -15,15 +15,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-
-# Copy the project file and restore dependencies
-# (Optimizes Docker caching so it doesn't re-restore unless dependencies change)
-COPY ["ECommorceWebAPI.csproj", "./"]
-RUN dotnet restore "ECommorceWebAPI.csproj"
+COPY ["ECommorceWebAPI/ECommorceWebAPI.csproj", "ECommorceWebAPI/"]
+RUN dotnet restore "ECommorceWebAPI/ECommorceWebAPI.csproj"
 
 # Copy the rest of the source code and build
 COPY . .
-WORKDIR "/src"
+WORKDIR "/src/ECommorceWebAPI"
 RUN dotnet build "ECommorceWebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Publish the application into a clean folder
