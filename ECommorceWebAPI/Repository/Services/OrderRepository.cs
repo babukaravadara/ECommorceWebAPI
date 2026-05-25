@@ -23,7 +23,7 @@ namespace ECommorceWebAPI.Repository.Services
                 Address = dto.Address,
                 Phone = dto.Phone,
                 TotalAmount = (decimal)total,
-                OrderDate = DateTime.Now,
+                OrderDate = DateTime.UtcNow,
                 Status= "Processing",
                 OrderItems =
                     cartItems.Select(x =>

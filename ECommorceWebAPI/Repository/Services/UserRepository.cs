@@ -29,9 +29,9 @@ namespace ECommorceWebAPI.Repository.Services
             {
                 UserId = userId,
                 Token = refreshToken,
-                ExpiryDate = DateTime.Now.AddDays(7),
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
                 CreatedDate =
-                    DateTime.Now,
+                    DateTime.UtcNow,
                 IsRevoked = false
             };
             await _context.RefreshTokens.AddAsync(token);

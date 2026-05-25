@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins(
-                    "http://localhost:4200"
+                    "https://shop-next-rho.vercel.app/"
                 )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
-    options.UseSqlServer(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString(
             "DefaultConnection"
         )
