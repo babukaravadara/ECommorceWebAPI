@@ -33,7 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddHealthChecks();
+
 builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository,CartRepository>();
@@ -84,7 +84,7 @@ builder.Services
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 var app = builder.Build();
-app.MapHealthChecks("/health");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
