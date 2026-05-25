@@ -8,20 +8,27 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(8080);
+});
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         policy =>
         {
             policy.WithOrigins(
-                    "https://shop-next-rho.vercel.app/"
+                    "https://shop-next-rho.vercel.app"
                 )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
         });
 });
+
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
     options.UseNpgsql(
@@ -30,16 +37,20 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         )
     )
 );
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
+builder.Services.AddControllers();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Repositories
 builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICartRepository,CartRepository>();
-builder.Services.AddScoped<IOrderRepository,OrderRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-
+// JWT
 builder.Services
 .AddAuthentication(
     JwtBearerDefaults.AuthenticationScheme
@@ -50,51 +61,52 @@ builder.Services
         new TokenValidationParameters
         {
             ValidateIssuer = true,
-
             ValidateAudience = true,
-
             ValidateLifetime = true,
-
             ValidateIssuerSigningKey = true,
+
             ValidIssuer =
                 builder.Configuration["Jwt:Issuer"],
+
             ValidAudience =
                 builder.Configuration["Jwt:Audience"],
+
             IssuerSigningKey =
                 new SymmetricSecurityKey(
-
                     Encoding.UTF8.GetBytes(
                         builder.Configuration["Jwt:Key"]
                     )
                 )
         };
+
     options.Events =
         new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
                 context.Token =
-                    context.Request.Cookies[
-                        "accessToken"
-                    ];
+                    context.Request.Cookies["accessToken"];
+
                 return Task.CompletedTask;
             }
         };
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-app.UseHttpsRedirection();
+var app = builder.Build();
+app.UseDeveloperExceptionPage();
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors("AllowAngular");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseStaticFiles();
+
 app.MapControllers();
 
 app.Run();
