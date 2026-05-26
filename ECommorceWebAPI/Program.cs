@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins(
-                    "https://shop-next-git-main-babukaravadaras-projects.vercel.app"
+                    "https://shop-next-rho.vercel.app/"
                 )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
