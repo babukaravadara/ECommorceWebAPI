@@ -5,7 +5,7 @@ namespace ECommorceWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : ControllerBase
+    public class ArticleController : ControllerBase
     {
         [HttpGet]
         public string Get()
